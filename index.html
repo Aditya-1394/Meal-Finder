@@ -55,7 +55,8 @@
     <div class="main-content">
         <!-- Breadcrumb -->
         <div class="breadcrumb-nav" id="breadcrumbNav" style="display: none;">
-            <i class="fas fa-home"></i>
+            <i class="fas fa-home" onclick="goHome()"></i>
+            <i class="fa-solid fa-angles-right"></i>
             <span id="breadcrumbText">CABBAGE SOUP (SHCHI)</span>
         </div>
 
@@ -78,7 +79,7 @@
                 </div>
                 <div class="meal-info-section">
                     <h3 id="mealDetailTitle">Baingan BhartaBaingan Bhart</h3>
-                    <hr>
+                    <hr style="height: 1px; background-color:#de5f04; border:none;">
                     <div class="meal-meta">
                         <div class="meta-item">
                             <strong>CATEGORY:</strong> <span id="mealCategory">VEGETARIAN</span>
@@ -87,7 +88,7 @@
                             <strong>Source:</strong> <a href="#" id="mealSource" target="_blank">Recipe Source</a>
                         </div>
                         <div class="meta-item">
-                            <strong>Tags:</strong> <span id="mealTags">Soup</span>
+                            <strong>Tags:</strong> <div id="mealTagsContainer" class="tags-container"></div>
                         </div>
                     </div>
                     
@@ -124,6 +125,9 @@
             <div class="recipes-grid" id="recipesGrid">
                 <!-- Recipe cards will be populated by JavaScript -->
             </div>
+            <div id="noResultsMessage" class="no-results-message" style="display: none;">
+        No any food found
+             </div>
         </div>
 
         <!-- Categories Grid -->
