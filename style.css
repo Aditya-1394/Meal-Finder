@@ -22,8 +22,7 @@ body {
 .header-content {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 64rem;
+    justify-content: space-between;
     margin-left: 10px;
 }
 
@@ -51,6 +50,7 @@ body {
     cursor: pointer;
     padding: 8px ;
     border-radius: 4px;
+    margin-right: 10px;
     transition: background-color 0.3s;
 }
 
@@ -238,7 +238,7 @@ body {
 .main-content {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem 1rem;
+    padding: 4rem 1rem;
 }
 
 /* Breadcrumb */
@@ -272,10 +272,11 @@ body {
 /* Category Description */
 .category-description {
     background: white;
-    border-radius: 12px;
-    padding: 2rem;
+    border-radius: 0px;
+    border: 1px solid  #d97706;
+    padding: 20px;
     margin-bottom: 2rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
 }
 
 .category-description h3 {

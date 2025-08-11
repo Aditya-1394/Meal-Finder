@@ -94,6 +94,7 @@ async function fetchMealsByCategory(category) {
     }
 }
 
+
 async function fetchMealDetails(mealId) {
     try {
         const response = await fetch(MEAL_DETAILS_API + mealId);
@@ -115,8 +116,12 @@ document.addEventListener('DOMContentLoaded', function() {
 function setupEventListeners() {
     menuToggle.addEventListener('click', toggleMenu);
     overlay.addEventListener('click', closeMenu);
-    searchInput.addEventListener('input', handleSearch);
-    searchButton.addEventListener('click', () => handleSearch({ target: { value: searchInput.value } }));
+    searchButton.addEventListener('click', handleSearch);
+    searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            handleSearch();
+        }
+    });
     
     // Close menu on escape key
     document.addEventListener('keydown', function(e) {
@@ -137,13 +142,15 @@ function goHome() {
 }
 
 function updateViewDisplay() {
-    // Hide all sections first
-    heroSection.style.display = 'none';
-    searchResults.style.display = 'none';
-    categoriesSection.style.display = 'none';
-    categoryDescription.style.display = 'none';
+    // Hide sections that should not be visible on all pages
+    // heroSection.style.display = 'none';
     mealDetailsSection.style.display = 'none';
     breadcrumbNav.style.display = 'none';
+    categoryDescription.style.display = 'none';
+
+    
+    searchResults.style.display = 'none';
+    categoriesSection.style.display = 'none';
 
     switch (currentView) {
         case 'home':
@@ -152,11 +159,13 @@ function updateViewDisplay() {
             break;
         case 'search':
             searchResults.style.display = 'block';
+            categoriesSection.style.display = 'block';
             breadcrumbNav.style.display = 'flex';
             breadcrumbText.textContent = 'SEARCH RESULTS';
             break;
         case 'category':
             searchResults.style.display = 'block';
+            categoriesSection.style.display = 'block';
             categoryDescription.style.display = 'block';
             breadcrumbNav.style.display = 'flex';
             breadcrumbText.textContent = selectedCategory.toUpperCase();
@@ -167,6 +176,7 @@ function updateViewDisplay() {
             break;
     }
 }
+
 
 // Menu Functions
 function toggleMenu() {
@@ -194,25 +204,45 @@ function updateMenuState() {
 }
 
 // Search Functions
-async function handleSearch(e) {
-    const searchTerm = e.target.value.trim();
+async function handleSearch() {
+    const searchTerm = searchInput.value.trim();
     
     if (searchTerm) {
-        resultsTitle.textContent = 'SEARCHING...';
         currentView = 'search';
         updateViewDisplay();
         
-        const searchedMeals = await searchMeals(searchTerm);
+        resultsTitle.textContent = 'SEARCHING...';
+        
+        // Find if the search term matches any category name
+        const matchingCategory = categories.find(
+            category => category.name.toLowerCase() === searchTerm.toLowerCase()
+        );
+        
+        let searchedMeals = [];
+
+        if (matchingCategory) {
+            // If a category match is found, fetch meals for that category
+            selectedCategory = matchingCategory.id;
+            currentCategoryData = matchingCategory;
+            resultsTitle.textContent = `${matchingCategory.name.toUpperCase()} MEALS`;
+            
+            // This is the key change: fetch meals by category instead of a general search
+            searchedMeals = await fetchMealsByCategory(matchingCategory.id);
+        } else {
+            // If no category match, perform a general search
+            selectedCategory = '';
+            currentCategoryData = null;
+            resultsTitle.textContent = 'SEARCH RESULTS';
+            searchedMeals = await searchMeals(searchTerm);
+        }
+        
         currentSearchResults = searchedMeals;
-        selectedCategory = '';
-        currentCategoryData = null;
-        resultsTitle.textContent = 'SEARCH RESULTS';
         renderRecipes();
+        
     } else if (currentView === 'search') {
         goHome();
     }
 }
-
 async function handleCategorySelect(categoryId) {
     selectedCategory = categoryId;
     currentCategoryData = categories.find(cat => cat.id === categoryId);
